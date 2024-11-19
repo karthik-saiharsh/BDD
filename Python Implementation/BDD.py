@@ -75,11 +75,12 @@ class BinaryDecisionDiagram():
                         nodes[i//2].setLeft(self.zero)
                 else:
                     if self.arrayTree[i] == '1':
-                        nodes[i//2].setLeft(self.one)
+                        nodes[i//2].setRight(self.one)
                     else:
-                        nodes[i//2].setLeft(self.zero)
+                        nodes[i//2].setRight(self.zero)
         nodes += [self.one, self.zero]
         self.nodes = nodes
 
 BDD = BinaryDecisionDiagram()
-BDD.buildTreeFromCSV("./tt.csv")
+BDD.readCSV("Python Implementation/tt.csv")
+BDD.buildBDD()
