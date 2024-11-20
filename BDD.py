@@ -131,8 +131,54 @@ class BinaryDecisionDiagram():
                 duplicate.parents[0].setRight(original)
             self.nodes.remove(duplicate)
 
-BDD = BinaryDecisionDiagram()
-BDD.readCSV("Python Implementation/tt2.csv")
-BDD.buildBDD()
-BDD.simplifyBDD()
-print()
+    def getExpression(self, isSOP=True):
+        '''Returns the SOP expression of the boolean function'''
+        if isSOP:
+            sop = ""
+            curr = self.one
+            prev = None
+            for node in curr.parents:
+                start = node
+                while len(start.parents) > 0:
+                    if start.parents[0].left == start:
+                        sop += f"{start.__repr__()}'"
+                    else:
+                        sop += start.__repr__()
+                    prev = start
+                    start = start.parents[0]
+                sop += " + "
+            if prev.left == start:
+                sop += f"{start.__repr__()}'"
+            else:
+                sop += f"{start.__repr__()}"
+            return sop
+
+        else:
+            pos = ""
+            curr = self.zero
+            prev = None
+            for node in curr.parents:
+                start = node
+                pos += "( "
+                while len(start.parents) != 0:
+                    if start.parents[0].right == start:
+                        pos += f"{start.__repr__()}' + "
+                    else:
+                        pos += f"{start.__repr__()} + "
+                    prev = start
+                    start = start.parents[0]
+                pos = pos[0:-2] + ") . "
+            if start.left == prev:
+                pos += f"{start.__repr__()} "
+            else:
+                pos += f"{start.__repr__()}' "
+            return pos
+
+    def generateExpressionFromCSV(self, path: str, isSOP: bool=True):
+        '''Single function to read a truth table from csv and generate a boolean expression'''
+        self.readCSV(path)
+        self.buildBDD()
+        self.simplifyBDD()
+        print(result:=self.getExpression(isSOP))
+        return result
+        
